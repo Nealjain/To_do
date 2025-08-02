@@ -20,11 +20,8 @@ export default function Footer() {
               <Terminal className="w-5 h-5 text-primary-600 dark:text-primary-400" />
             </div>
             <div>
-              <p className="text-sm font-medium">
-                Built with passion by Neal Jain
-              </p>
               <p className="text-lg font-bold text-primary-600 dark:text-primary-400">
-                Neal Jain
+                by Neal Jain
               </p>
             </div>
           </div>
