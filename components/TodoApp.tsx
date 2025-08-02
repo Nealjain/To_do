@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useAppSelector, useAppDispatch } from '@/lib/hooks'
 import { setDarkMode } from '@/lib/slices/tasksSlice'
 import TaskForm from './TaskForm'
@@ -9,11 +9,14 @@ import SearchBar from './SearchBar'
 import FilterComponent from './FilterComponent'
 import SortComponent from './SortComponent'
 import DarkModeToggle from './DarkModeToggle'
+import Preloader from './Preloader'
+import Footer from './Footer'
 import { Moon, Sun } from 'lucide-react'
 
 export default function TodoApp() {
   const dispatch = useAppDispatch()
   const { tasks, filters, sort, darkMode } = useAppSelector(state => state.tasks)
+  const [isLoading, setIsLoading] = useState(true)
 
   // Initialize dark mode from localStorage
   useEffect(() => {
@@ -37,8 +40,21 @@ export default function TodoApp() {
     localStorage.setItem('darkMode', JSON.stringify(darkMode))
   }, [darkMode])
 
+  // Initialize loading
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 2000) // Show preloader for 2 seconds
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (isLoading) {
+    return <Preloader />
+  }
+
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto animate-fadeInUp">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
