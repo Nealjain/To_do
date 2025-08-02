@@ -89,7 +89,7 @@ export default function TaskItem({ task }: TaskItemProps) {
               Delete Task
             </h3>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
-              Are you sure you want to delete "{task.title}"? This action cannot be undone.
+              Are you sure you want to delete &quot;{task.title}&quot;? This action cannot be undone.
             </p>
             <div className="flex gap-3">
               <button
