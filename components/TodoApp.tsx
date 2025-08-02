@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useAppSelector, useAppDispatch } from '@/lib/hooks'
 import { setDarkMode } from '@/lib/slices/tasksSlice'
 import TaskForm from './TaskForm'
@@ -11,88 +11,92 @@ import SortComponent from './SortComponent'
 import DarkModeToggle from './DarkModeToggle'
 import Preloader from './Preloader'
 import Footer from './Footer'
-import { Moon, Sun } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
 
 export default function TodoApp() {
-  const dispatch = useAppDispatch()
-  const { tasks, filters, sort, darkMode } = useAppSelector(state => state.tasks)
-  const [isLoading, setIsLoading] = useState(true)
-
-  // Initialize dark mode from localStorage
-  useEffect(() => {
-    const savedDarkMode = localStorage.getItem('darkMode')
-    if (savedDarkMode !== null) {
-      dispatch(setDarkMode(JSON.parse(savedDarkMode)))
+  const taskDispatcher = useAppDispatch()
+  const appState = useAppSelector(state => state.tasks)
+  const [appInitializing, setAppInitializing] = useState(true)
+  const initializeTheme = useCallback(() => {
+    const storedTheme = localStorage.getItem('darkMode')
+    if (storedTheme) {
+      const parsedTheme = JSON.parse(storedTheme)
+      taskDispatcher(setDarkMode(parsedTheme))
     } else {
-      // Check system preference
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      dispatch(setDarkMode(prefersDark))
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+      taskDispatcher(setDarkMode(systemPrefersDark))
     }
-  }, [dispatch])
+  }, [taskDispatcher])
 
-  // Update document class and localStorage when dark mode changes
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark')
+    initializeTheme()
+  }, [initializeTheme])
+  
+  useEffect(() => {
+    const htmlElement = document.documentElement
+    if (appState.darkMode) {
+      htmlElement.classList.add('dark')
     } else {
-      document.documentElement.classList.remove('dark')
+      htmlElement.classList.remove('dark')
     }
-    localStorage.setItem('darkMode', JSON.stringify(darkMode))
-  }, [darkMode])
+    localStorage.setItem('darkMode', JSON.stringify(appState.darkMode))
+  }, [appState.darkMode])
 
-  // Initialize loading
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 2000) // Show preloader for 2 seconds
+    const loadingTimer = setTimeout(() => {
+      setAppInitializing(false)
+    }, 2200)
 
-    return () => clearTimeout(timer)
+    return () => clearTimeout(loadingTimer)
   }, [])
 
-  if (isLoading) {
+  if (appInitializing) {
     return <Preloader />
   }
 
+  const taskCount = appState.tasks.length
+  const taskCountText = taskCount === 1 ? '1 task' : `${taskCount} tasks`
+  
   return (
-    <div className="max-w-6xl mx-auto animate-fadeInUp">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Todo List App
+    <section className="max-w-6xl mx-auto animate-fadeInUp">
+      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <Sparkles className="w-8 h-8 text-primary-600" />
+            Task Manager
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
-            Manage your tasks efficiently
+          <p className="text-gray-600 dark:text-gray-400">
+            Organize and manage your daily tasks
           </p>
         </div>
         <div className="flex items-center gap-4">
           <DarkModeToggle />
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            {tasks.length} task{tasks.length !== 1 ? 's' : ''}
-          </div>
+          <span className="text-sm text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
+            {taskCountText}
+          </span>
         </div>
-      </div>
+      </header>
 
-      {/* Add Task Form */}
-      <div className="card p-6 mb-6">
+      {/* Task creation area */}
+      <section className="card p-6 mb-6 border-l-4 border-primary-500">
         <TaskForm />
-      </div>
+      </section>
 
-      {/* Filters and Search */}
+      {/* Control panel for filtering and searching */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-        <div className="lg:col-span-2">
+        <section className="lg:col-span-2">
           <SearchBar />
-        </div>
-        <div className="flex gap-2">
+        </section>
+        <aside className="flex gap-2">
           <FilterComponent />
           <SortComponent />
-        </div>
+        </aside>
       </div>
 
-      {/* Task List */}
-      <div className="card p-6">
+      {/* Main task display area */}
+      <main className="card p-6 min-h-[400px]">
         <TaskList />
-      </div>
-    </div>
+      </main>
+    </section>
   )
 } 

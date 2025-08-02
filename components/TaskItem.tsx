@@ -26,7 +26,7 @@ export default function TaskItem({ task }: TaskItemProps) {
   const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && task.status !== 'Completed'
 
   return (
-    <div className="card p-4 hover:shadow-lg transition-shadow">
+    <div className="card p-4 hover:shadow-lg transition-all duration-300 animate-fadeInUp hover:-translate-y-1">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex flex-col sm:flex-row sm:items-start gap-3 mb-2">
@@ -53,30 +53,31 @@ export default function TaskItem({ task }: TaskItemProps) {
             </p>
           )}
 
-          <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-gray-500 dark:text-gray-400">
             <div className="flex items-center gap-1">
               <Clock size={14} />
-              <span>Created: {formatDateTime(task.createdAt)}</span>
+              <span className="text-xs sm:text-sm">Created: {formatDateTime(task.createdAt)}</span>
             </div>
             {task.dueDate && (
               <div className={`flex items-center gap-1 ${isOverdue ? 'text-red-600' : ''}`}>
                 <Calendar size={14} />
-                <span>Due: {formatDate(task.dueDate)}</span>
-                {isOverdue && <span className="text-xs font-medium">(Overdue)</span>}
+                <span className="text-xs sm:text-sm">Due: {formatDate(task.dueDate)}</span>
+                {isOverdue && <span className="text-xs font-medium animate-pulse">(Overdue)</span>}
               </div>
             )}
           </div>
         </div>
 
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex items-center gap-3 flex-shrink-0">
           <TaskForm task={task} isEditing />
           
           <button
             onClick={() => setShowDeleteConfirm(true)}
-            className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+            className="btn-icon text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 active:bg-red-100 dark:active:bg-red-900/30"
             title="Delete task"
+            aria-label="Delete task"
           >
-            <Trash2 size={16} />
+            <Trash2 size={18} className="sm:w-4 sm:h-4" />
           </button>
         </div>
       </div>

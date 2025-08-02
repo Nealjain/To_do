@@ -52,28 +52,30 @@ export default function TaskList() {
           Tasks ({filteredTasks.length})
         </h2>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
           <button
             onClick={() => setGroupByStatus(false)}
-            className={`p-2 rounded-lg transition-colors ${
+            className={`btn-icon transition-all duration-200 ${
               !groupByStatus
-                ? 'bg-primary-100 text-primary-600 dark:bg-primary-900 dark:text-primary-300'
-                : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
+                ? 'bg-primary-500 text-white shadow-md'
+                : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
             title="List view"
+            aria-label="List view"
           >
-            <List size={20} />
+            <List size={18} className="sm:w-4 sm:h-4" />
           </button>
           <button
             onClick={() => setGroupByStatus(true)}
-            className={`p-2 rounded-lg transition-colors ${
+            className={`btn-icon transition-all duration-200 ${
               groupByStatus
-                ? 'bg-primary-100 text-primary-600 dark:bg-primary-900 dark:text-primary-300'
-                : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
+                ? 'bg-primary-500 text-white shadow-md'
+                : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
             title="Group by status"
+            aria-label="Group by status"
           >
-            <Grid3X3 size={20} />
+            <Grid3X3 size={18} className="sm:w-4 sm:h-4" />
           </button>
         </div>
       </div>

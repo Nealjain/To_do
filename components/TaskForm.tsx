@@ -73,10 +73,12 @@ export default function TaskForm({ task, isEditing = false, onClose }: TaskFormP
       <>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="btn-secondary flex items-center gap-2"
+          className="btn-secondary flex items-center gap-2 sm:gap-1 text-sm sm:text-xs sm:px-3 sm:py-2"
+          aria-label="Edit task"
         >
-          <Edit size={16} />
-          Edit Task
+          <Edit size={18} className="sm:w-4 sm:h-4" />
+          <span className="hidden sm:inline">Edit</span>
+          <span className="sm:hidden">Edit Task</span>
         </button>
 
         {isModalOpen && (
@@ -88,7 +90,8 @@ export default function TaskForm({ task, isEditing = false, onClose }: TaskFormP
                 </h2>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  className="btn-icon text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  aria-label="Close modal"
                 >
                   <X size={24} />
                 </button>
